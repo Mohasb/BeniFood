@@ -4,8 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,22 +28,23 @@ fun BotomSignIn_Up() {
         Text(
             text = "Al registrarte estás aceptando nuestros",
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.secondary
         )
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Text(
                 text = "Terminos y condiciones",
                 modifier = Modifier.clickable { },
                 style = TextStyle(
-                    color = Color(0xFFFF0000)
+                    color = MaterialTheme.colorScheme.primary
                 )
             )
-            Text(text = " & ")
+            Text(text = " & ", color = MaterialTheme.colorScheme.secondary)
             Text(
                 text = "Politica de privacidad",
                 modifier = Modifier.clickable { },
                 style = TextStyle(
-                    color = Color(0xFFFF0000)
+                    color = MaterialTheme.colorScheme.primary
                 )
             )
         }
@@ -54,7 +57,7 @@ fun BotomSignIn_Up() {
                 fontSize = 32.sp,
                 fontFamily = FontFamily(Font(R.font.roboto_bold)),
                 fontWeight = FontWeight(700),
-                color = Color(0xFF000000),
+                color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center,
 
                 )

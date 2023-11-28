@@ -13,8 +13,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +30,8 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -50,72 +58,92 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUp(modifier: Modifier, viewModel: SignUpViewModel, navController: NavHostController) {
-    Column(modifier = Modifier) {
-        Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_ios_24),
-            contentDescription = "back",
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .clickable { navController.navigateUp() })
-        HeaderTextSignUp()
-        AlreadyRegisteredText(navController)
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp)
-        ) {
-            BaseOutlinedTextField(
-                value = "",
-                onTextFieldChanged = {},
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxWidth(),
-                labelValue = "Nombre completo",
-                placeHolderValue = "",
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                icon = painterResource(id = R.drawable.baseline_clear_24),
-                iconDescription = "Clear"
-            )
-            BaseOutlinedTextField(
-                value = "",
-                onTextFieldChanged = {},
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxWidth(),
-                labelValue = "Email",
-                placeHolderValue = "alguien@domain.com",
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                icon = painterResource(id = R.drawable.baseline_clear_24),
-                iconDescription = "Clear"
-            )
-            BaseOutlinedTextField(
-                value = "",
-                onTextFieldChanged = {},
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxWidth(),
-                labelValue = "Password",
-                placeHolderValue = "**********",
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                icon = painterResource(id = R.drawable.outline_visibility_24),
-                iconDescription = "Clear"
-            )
-            Spacer(modifier = Modifier.padding(16.dp))
-            ButtonBase(onclick = { /*TODO*/ }, isEnabled = true, textValue = "Registrarse")
-            Spacer(modifier = Modifier.padding(16.dp))
+
+    val name: String by viewModel.name.observeAsState(initial = "")
+    val email: String by viewModel.email.observeAsState(initial = "")
+    val password: String by viewModel.password.observeAsState(initial = "")
 
 
-        }
-        BotomSignIn_Up()
+    Column {
+        Header(navController)
+        Spacer(modifier = Modifier.padding(30.dp))
+        Body(viewModel, name, email, password)
+        Footer()
     }
 }
 
+@Composable
+fun Header(navController: NavHostController) {
+    Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_ios_24),
+        contentDescription = "back",
+        tint = MaterialTheme.colorScheme.secondary,
+        modifier = Modifier
+            .padding(vertical = 16.dp)
+            .clickable { navController.navigateUp() })
+    HeaderTextSignUp()
+    AlreadyRegisteredText(navController)
+}
+
+@Composable
+fun Body(viewModel: SignUpViewModel, name: String, email: String, password: String) {
+
+    var passwordVisibility by rememberSaveable {
+        mutableStateOf(false)
+    }
 
 
+    BaseOutlinedTextField(
+        value = name,
+        onTextFieldChanged = { viewModel.onSignUpChange(it, email, password)},
+        modifier = Modifier
+            .fillMaxWidth(),
+        labelValue = "Nombre completo",
+        placeHolderValue = "",
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        icon = painterResource(id = R.drawable.baseline_clear_24),
+        iconClick = { viewModel.onSignUpChange("", email, password) },
+        visualTransformation = VisualTransformation.None,
+        iconDescription = "Clear name"
+    )
+    BaseOutlinedTextField(
+        value = email,
+        onTextFieldChanged = {viewModel.onSignUpChange(name, it, password)},
+        modifier = Modifier
+            .fillMaxWidth(),
+        labelValue = "Email",
+        placeHolderValue = "",
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        icon = painterResource(id = R.drawable.baseline_clear_24),
+        iconClick = { viewModel.onSignUpChange(name, "", password) },
+        visualTransformation = VisualTransformation.None,
+        iconDescription = "Clear email"
+    )
+    BaseOutlinedTextField(
+        value = password,
+        onTextFieldChanged = {viewModel.onSignUpChange(name, email, it)},
+        modifier = Modifier
+            .fillMaxWidth(),
+        labelValue = "Password",
+        placeHolderValue = "",
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        icon = if (passwordVisibility) {
+            painterResource(id = R.drawable.outline_visibility_off_24)
+        } else {
+            painterResource(id = R.drawable.outline_visibility_24)
+        },
+        iconClick = { passwordVisibility = !passwordVisibility },
+        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+        iconDescription = "Hide/Show pwd"
+    )
+    Spacer(modifier = Modifier.padding(16.dp))
+    ButtonBase(onclick = { /*TODO*/ }, isEnabled = true, textValue = "Registrarse")
+    Spacer(modifier = Modifier.padding(16.dp))
+}
+@Composable
+fun Footer() = BotomSignIn_Up()
 
 
-
-
-
+//Components
 @Composable
 fun HeaderTextSignUp() {
     Column {
@@ -125,7 +153,7 @@ fun HeaderTextSignUp() {
                 fontSize = 48.sp,
                 fontFamily = FontFamily(Font(R.font.roboto_bold)),
                 fontWeight = FontWeight(700),
-                color = Color(0xFF000000),
+                color = MaterialTheme.colorScheme.secondary
             ),
         )
         Row {
@@ -144,7 +172,7 @@ fun HeaderTextSignUp() {
                     fontSize = 48.sp,
                     fontFamily = FontFamily(Font(R.font.roboto_bold)),
                     fontWeight = FontWeight(700),
-                    color = Color(0xFF000000),
+                    color = MaterialTheme.colorScheme.secondary
                 ),
             )
         }
@@ -154,7 +182,7 @@ fun HeaderTextSignUp() {
                 fontSize = 48.sp,
                 fontFamily = FontFamily(Font(R.font.roboto_bold)),
                 fontWeight = FontWeight(700),
-                color = Color(0xFF000000),
+                color = MaterialTheme.colorScheme.secondary
             ),
         )
     }
@@ -169,7 +197,7 @@ fun AlreadyRegisteredText(navController: NavHostController) {
                 fontSize = 18.sp,
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                 fontWeight = FontWeight(400),
-                color = Color(0xFF000000),
+                color = MaterialTheme.colorScheme.secondary
             ),
         )
         Text(text = "Inicia sesión", style = TextStyle(

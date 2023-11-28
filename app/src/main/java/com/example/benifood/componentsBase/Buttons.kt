@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,8 +34,8 @@ fun ButtonBase(onclick: () -> Unit, isEnabled: Boolean, textValue: String) {
             .fillMaxWidth()
             .padding(top = 20.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Black,
-            contentColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.tertiary,
             disabledContainerColor = Color.LightGray,
             disabledContentColor = Color.Gray
         ), enabled = isEnabled
@@ -65,12 +66,11 @@ fun ButtonBadge(
         modifier = modifier.height(50.dp),
         onClick = { onclick },
         shape = RoundedCornerShape(size = 8.dp),
-        border = BorderStroke(2.dp, Color.Red),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary,),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = Color.Black,
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.secondary,
         ), enabled = isEnabled
-
     ) {
         Image(
             painter = painterResource(id = idIconPainterResorce),
