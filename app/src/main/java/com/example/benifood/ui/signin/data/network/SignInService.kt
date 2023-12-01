@@ -14,7 +14,7 @@ class SignInService @Inject constructor(
         return withContext(Dispatchers.IO) {
             val response = client.doSignIn(UserDTO(user, password))
 
-            Log.i("DAM", response.body()?.accessToken!!)
+            Log.i("DAM SignInUseCase", response.body()?.accessToken!!)
 
             !response.body()?.accessToken.isNullOrEmpty()
         }

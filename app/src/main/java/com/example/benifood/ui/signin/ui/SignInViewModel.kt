@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import com.example.benifood.core.routes.Routes
 import com.example.benifood.ui.signin.domain.SignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -27,6 +29,9 @@ class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCa
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _showToast = MutableLiveData<Boolean>()
+    val showToast: LiveData<Boolean> = _showToast
+
 
     fun onSignInChange(email: String, password: String) {
         _email.value = email
@@ -43,17 +48,28 @@ class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCa
             Regex("[a-z]")
         ) && _password.value!!.contains(Regex("[0-9]"))
 
-    fun onSignInClick() {
+    fun onSignInClick(navController: NavHostController) {
         //Signin action
         viewModelScope.launch {
-            _isLoading.value = true
-            //crypto.getCryptoPassword(_password.value!!)
-            val result = signInUseCase(_email.value!!, _password.value!!)
+            try {
+                _isLoading.value = true
+                val result = signInUseCase(_email.value!!, _password.value!!)
 
-            if(result) {
-                Log.i("DAM viewModel", "Navigate to Home")
+                if(result) {
+                    Log.i("zDAM SignIn viewModel", "Navigate to Home")
+                    _showToast.value = false
+                    navController.navigate(Routes.Home.route)
+                } else {
+                    _showToast.value = true
+                }
+            } catch (e: Exception) {
+
+                Log.e("xDAM SignIn viewModel", "Error during sign-in: ${e.message}")
+                _showToast.value = true
+            } finally {
+                _isLoading.value = false
             }
-            _isLoading.value = false
         }
+
     }
 }
