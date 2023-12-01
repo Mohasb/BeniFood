@@ -37,7 +37,7 @@ import com.example.benifood.R
 import com.example.benifood.componentsBase.BaseOutlinedTextField
 import com.example.benifood.componentsBase.BotomSignIn_Up
 import com.example.benifood.componentsBase.ButtonBase
-import com.example.benifood.models.Routes
+import com.example.benifood.core.routes.Routes
 
 @Composable
 fun SignInScreen(viewModel: SignInViewModel, navController: NavHostController) {
@@ -54,9 +54,10 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavHostController) {
 @Composable
 fun SignIn(viewModel: SignInViewModel, navController: NavHostController) {
 
-    val email: String by viewModel.email.observeAsState(initial = "")
-    val password: String by viewModel.password.observeAsState(initial = "")
-    val signInEnabled: Boolean by viewModel.sigInEnabled.observeAsState(initial = false)
+    //TODO:Delete the initial values below. It's just to test and so you don't have to enter the email and password every time
+    val email: String by viewModel.email.observeAsState(initial = "mha@gmail.com")
+    val password: String by viewModel.password.observeAsState(initial = "Mha123456")
+    val signInEnabled: Boolean by viewModel.sigInEnabled.observeAsState(initial = true)
 
     Column {
         Header(navController)
@@ -202,6 +203,6 @@ fun SignInButton(
     onSignInClicked: () -> Unit
 ) {
     ButtonBase(
-        onclick = { /*onSignInClicked()*/ navController.navigate(Routes.Home.route) }, isEnabled = true, textValue = "Iniciar Sesión"
+        onclick = { onSignInClicked() /*navController.navigate(Routes.Home.route)*/ }, isEnabled = signInEnabled, textValue = "Iniciar Sesión"
     )
 }

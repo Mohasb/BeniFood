@@ -1,4 +1,4 @@
-package com.example.benifood.models
+package com.example.benifood.core.routes
 
 sealed class Routes(val route: String) {
     object SplashScreen : Routes("splash")

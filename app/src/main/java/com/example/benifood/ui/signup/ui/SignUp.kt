@@ -39,7 +39,7 @@ import com.example.benifood.R
 import com.example.benifood.componentsBase.BaseOutlinedTextField
 import com.example.benifood.componentsBase.BotomSignIn_Up
 import com.example.benifood.componentsBase.ButtonBase
-import com.example.benifood.models.Routes.*
+import com.example.benifood.core.routes.Routes.*
 
 @Composable
 fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController) {

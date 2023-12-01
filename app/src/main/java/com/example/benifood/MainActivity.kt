@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.benifood.models.Routes.*
+import com.example.benifood.core.routes.Routes.*
 import com.example.benifood.ui.home.ui.HomeScreen
 import com.example.benifood.ui.home.ui.HomeScreenViewModel
 import com.example.benifood.ui.signin.ui.SignInScreen
