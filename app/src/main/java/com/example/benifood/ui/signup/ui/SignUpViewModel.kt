@@ -5,33 +5,43 @@ import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import com.example.benifood.core.routes.Routes
+import com.example.benifood.ui.signup.domain.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.regex.Pattern
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor() : ViewModel() {
+class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCase) : ViewModel() {
 
-    //LiveData
-    private val _name = MutableLiveData<String>()
+    //TODO:Delete the initial values below. It's just to test and so you don't have to enter the email and password every time
+    private val _name = MutableLiveData<String>("Muhammad")
     val name: LiveData<String> = _name
 
-    private val _email = MutableLiveData<String>()
+    private val _email = MutableLiveData<String>("abc123@gmail.com")
     val email: LiveData<String> = _email
 
-    private val _password = MutableLiveData<String>()
+    private val _password = MutableLiveData<String>("Abc123@gmail.com")
     val password: LiveData<String> = _password
 
     private val _sigUpEnabled = MutableLiveData<Boolean>()
     val sigUpEnabled: LiveData<Boolean> = _sigUpEnabled
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _showToast = MutableLiveData<Boolean>()
+    val showToast: LiveData<Boolean> = _showToast
 
 
     fun onSignUpChange(name: String, email: String, password: String) {
         _name.value = name
         _email.value = email
         _password.value = password
-
-        _sigUpEnabled.value = isValidName(name) && isValidEmail(email) && isValidPassword(password)
+        //TODO:Remove true from below. its just for testing and dont have to insert the email and password every time
+        //_sigUpEnabled.value = isValidName(name) && isValidEmail(email) && isValidPassword(password)
     }
 
     private fun isValidName(name: String): Boolean {
@@ -41,23 +51,31 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
     private fun isValidEmail(email: String): Boolean =
         Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
-    /*
-    * ^               # start-of-string
-    (?=.*[0-9])       # a digit must occur at least once
-    (?=.*[a-z])       # a lower case letter must occur at least once
-    (?=.*[A-Z])       # an upper case letter must occur at least once
-    (?=.*[@#$%^&+=])  # a special character must occur at least once you can replace with your special characters
-    (?=\\S+$)         # no whitespace allowed in the entire string
-    .{4,}             # anything, at least six places though
-    $                 # end-of-string
-    *
- */
     private fun isValidPassword(password: String): Boolean =
-        Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@!#$%^&+=])(?=\\S+$).{4,}$")
-            .matcher(password).matches()
+        _password.value!!.length > 8 && _password.value!!.contains(Regex("[A-Z]")) && _password.value!!.contains(
+            Regex("[a-z]")
+        ) && _password.value!!.contains(Regex("[0-9]"))
 
-    fun onSignUpClick() {
-        //Signin action
-        Log.i("LOG", "Registro click")
+    fun onSignUpClick(navController: NavHostController) {
+        viewModelScope.launch {
+            try {
+                _isLoading.value = true
+                val result = signUpUseCase(_name.value!!, _email.value!!, _password.value!!)
+
+                if(result) {
+                    Log.i("zDAM SignUP viewModel", "Navigate to Home")
+                    _showToast.value = false
+                    navController.navigate(Routes.Home.route)
+                } else {
+                    _showToast.value = true
+                }
+            } catch (e: Exception) {
+
+                Log.e("xDAM SignUP viewModel", "Error during sign-up: ${e.message}")
+                _showToast.value = true
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 }

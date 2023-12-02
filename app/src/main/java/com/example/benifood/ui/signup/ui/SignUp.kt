@@ -39,36 +39,50 @@ import com.example.benifood.R
 import com.example.benifood.componentsBase.BaseOutlinedTextField
 import com.example.benifood.componentsBase.BotomSignIn_Up
 import com.example.benifood.componentsBase.ButtonBase
+import com.example.benifood.componentsBase.ToastMessage
 import com.example.benifood.core.routes.Routes.*
+import com.example.benifood.ui.signin.ui.Loading
+import com.example.benifood.ui.signin.ui.SignInButton
 
 @Composable
 fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(
-                rememberScrollState()
-            )
-    ) {
-        SignUp(Modifier.align(Alignment.Center), viewModel, navController)
+
+    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
+
+    if (isLoading) {
+        Loading()
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(
+                    rememberScrollState()
+                )
+        ) {
+            SignUp(Modifier.align(Alignment.Center), viewModel, navController)
+        }
     }
+
+
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUp(modifier: Modifier, viewModel: SignUpViewModel, navController: NavHostController) {
 
     val name: String by viewModel.name.observeAsState(initial = "")
     val email: String by viewModel.email.observeAsState(initial = "")
+    val signInEnabled: Boolean by viewModel.sigUpEnabled.observeAsState(initial = true)
     val password: String by viewModel.password.observeAsState(initial = "")
+    val showToast: Boolean by viewModel.showToast.observeAsState(initial = false)
 
 
     Column {
         Header(navController)
         Spacer(modifier = Modifier.padding(30.dp))
-        Body(viewModel, name, email, password)
+        Body(viewModel, name, email, password, signInEnabled, navController)
         Footer()
+        if (showToast) ToastMessage(message = "Error en el Registro :\nEmail o Password incorrecto")
     }
 }
 
@@ -85,7 +99,14 @@ fun Header(navController: NavHostController) {
 }
 
 @Composable
-fun Body(viewModel: SignUpViewModel, name: String, email: String, password: String) {
+fun Body(
+    viewModel: SignUpViewModel,
+    name: String,
+    email: String,
+    password: String,
+    signUpEnabled: Boolean,
+    navController: NavHostController
+) {
 
     var passwordVisibility by rememberSaveable {
         mutableStateOf(false)
@@ -94,9 +115,8 @@ fun Body(viewModel: SignUpViewModel, name: String, email: String, password: Stri
 
     BaseOutlinedTextField(
         value = name,
-        onTextFieldChanged = { viewModel.onSignUpChange(it, email, password)},
-        modifier = Modifier
-            .fillMaxWidth(),
+        onTextFieldChanged = { viewModel.onSignUpChange(it, email, password) },
+        modifier = Modifier.fillMaxWidth(),
         labelValue = "Nombre completo",
         placeHolderValue = "",
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -107,9 +127,8 @@ fun Body(viewModel: SignUpViewModel, name: String, email: String, password: Stri
     )
     BaseOutlinedTextField(
         value = email,
-        onTextFieldChanged = {viewModel.onSignUpChange(name, it, password)},
-        modifier = Modifier
-            .fillMaxWidth(),
+        onTextFieldChanged = { viewModel.onSignUpChange(name, it, password) },
+        modifier = Modifier.fillMaxWidth(),
         labelValue = "Email",
         placeHolderValue = "",
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -120,9 +139,8 @@ fun Body(viewModel: SignUpViewModel, name: String, email: String, password: Stri
     )
     BaseOutlinedTextField(
         value = password,
-        onTextFieldChanged = {viewModel.onSignUpChange(name, email, it)},
-        modifier = Modifier
-            .fillMaxWidth(),
+        onTextFieldChanged = { viewModel.onSignUpChange(name, email, it) },
+        modifier = Modifier.fillMaxWidth(),
         labelValue = "Password",
         placeHolderValue = "",
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -136,9 +154,21 @@ fun Body(viewModel: SignUpViewModel, name: String, email: String, password: Stri
         iconDescription = "Hide/Show pwd"
     )
     Spacer(modifier = Modifier.padding(16.dp))
-    ButtonBase(onclick = { /*TODO*/ }, isEnabled = true, textValue = "Registrarse")
+    SignUpButton(signUpEnabled, navController) { viewModel.onSignUpClick(navController) }
+
+    //ButtonBase(onclick = { onSignUpClick() }, isEnabled = true, textValue = "Registrarse")
     Spacer(modifier = Modifier.padding(16.dp))
 }
+
+@Composable
+fun SignUpButton(
+    signUpEnabled: Boolean, navController: NavHostController, onSignUpClick: () -> Unit
+) {
+    ButtonBase(
+        onclick = { onSignUpClick() }, isEnabled = signUpEnabled, textValue = "Registrarse"
+    )
+}
+
 @Composable
 fun Footer() = BotomSignIn_Up()
 

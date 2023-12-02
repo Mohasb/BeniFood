@@ -48,20 +48,18 @@ import com.example.benifood.core.routes.Routes
 fun SignInScreen(viewModel: SignInViewModel, navController: NavHostController) {
     val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
 
-
-
-        if (isLoading) {
-            Loading()
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                SignIn(viewModel, navController)
-            }
+    if (isLoading) {
+        Loading()
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            SignIn(viewModel, navController)
         }
+    }
 }
 
 @Composable
@@ -227,7 +225,7 @@ fun SignInButton(
     signInEnabled: Boolean, navController: NavHostController, onSignInClicked: () -> Unit
 ) {
     ButtonBase(
-        onclick = { onSignInClicked() /*navController.navigate(Routes.Home.route)*/ },
+        onclick = { onSignInClicked() },
         isEnabled = signInEnabled,
         textValue = "Iniciar Sesión"
     )
