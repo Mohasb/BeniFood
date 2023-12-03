@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
@@ -39,7 +39,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavHostController) {
 
     val listaRestaurant = viewModel.restaurants.observeAsState()
 
-    Scaffold(topBar = { TopBar() }, bottomBar = { BottomBar() }, content = {
+    Scaffold(topBar = { TopBar(navController) }, bottomBar = { BottomBar() }, content = {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -54,7 +54,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavHostController) {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun TopBar() {
+fun TopBar(navController: NavHostController) {
     CenterAlignedTopAppBar(title = {
         Row {
             AppName(32)
@@ -62,10 +62,10 @@ fun TopBar() {
     }, colors = TopAppBarDefaults.smallTopAppBarColors(
         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
     ), navigationIcon = {
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = { navController.navigateUp() }) {
             Icon(
-                imageVector = Icons.Filled.Menu,
-                contentDescription = "menu",
+                imageVector = Icons.Filled.ArrowBackIosNew,
+                contentDescription = "back",
                 modifier = Modifier.size(100.dp)
             )
         }
