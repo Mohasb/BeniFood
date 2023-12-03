@@ -1,5 +1,6 @@
 package com.example.benifood.core.dependencyinjection
 
+import com.example.benifood.ui.home.data.network.HomeClient
 import com.example.benifood.ui.signin.data.network.SignInClient
 import com.example.benifood.ui.signup.data.network.SignUpClient
 import dagger.Module
@@ -29,4 +30,9 @@ class NetworkModule {
     @Provides
     fun provideSignUpClient(retrofit: Retrofit): SignUpClient =
         retrofit.create(SignUpClient::class.java)
+
+    @Singleton
+    @Provides
+    fun provideRestaurantClient(retrofit: Retrofit): HomeClient =
+        retrofit.create(HomeClient::class.java)
 }

@@ -15,7 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.benifood.core.routes.Routes.*
 import com.example.benifood.ui.home.ui.HomeScreen
-import com.example.benifood.ui.home.ui.HomeScreenViewModel
+import com.example.benifood.ui.home.ui.HomeViewModel
 import com.example.benifood.ui.signin.ui.SignInScreen
 import com.example.benifood.ui.signin.ui.SignInViewModel
 import com.example.benifood.ui.signup.ui.SignUpScreen
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
 
     private val signInViewModel: SignInViewModel by viewModels()
     private val signUpViewModel: SignUpViewModel by viewModels()
-    private val homeScreenViewModel: HomeScreenViewModel by viewModels()
+    private val homeScreenViewModel: HomeViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
