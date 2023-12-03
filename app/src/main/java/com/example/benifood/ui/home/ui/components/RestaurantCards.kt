@@ -40,7 +40,6 @@ fun RestaurantCards(
 
         items(items) { values ->
             GridItem(properties = values)
-
         }
     }
 }

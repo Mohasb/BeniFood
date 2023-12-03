@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.benifood.core.routes.Routes
 
 
 @Composable
@@ -57,9 +58,9 @@ fun RestaurantContent(
     navController: NavController
 ) {
 
-    Card(
-        shape = shape, border = border, modifier = modifier.clickable {  }
-    ) {
+    Card(shape = shape,
+        border = border,
+        modifier = modifier.clickable { navController.navigate(Routes.Details.route + "/" + restaurant.id) }) {
         // Contenedor
         Column {
             Row(
@@ -75,7 +76,11 @@ fun RestaurantContent(
                         .background(color = Color.LightGray, shape = CircleShape)
                         .size(40.dp), contentAlignment = Alignment.Center
                 ) {
-                    Icon(Icons.Default.Fastfood, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    Icon(
+                        Icons.Default.Fastfood,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(32.dp))
@@ -130,10 +135,19 @@ fun RestaurantContent(
                 ) {
 
                     // Botones
-                    Row(modifier = Modifier.align(Alignment.CenterStart).padding(bottom = 10.dp)) {
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(bottom = 10.dp)
+                    ) {
 
-                        Button(onClick = { /*TODO*/ }) {
-                            Text(text = "Ver detalles", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        Button(onClick = { navController.navigate(Routes.Details.route + "/" + restaurant.id) }) {
+                            Text(
+                                text = "Ver detalles",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp
+                            )
                         }
 
                     }
@@ -141,11 +155,19 @@ fun RestaurantContent(
                     // Iconos
                     Row(modifier = Modifier.align(Alignment.CenterEnd)) {
                         IconButton(onClick = { /*TODO*/ }) {
-                            Icon(Icons.Default.Favorite, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                            Icon(
+                                Icons.Default.Favorite,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
 
                         IconButton(onClick = { /*TODO*/ }) {
-                            Icon(Icons.Default.Share, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                            Icon(
+                                Icons.Default.Share,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                 }
